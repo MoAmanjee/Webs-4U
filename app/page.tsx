@@ -1,248 +1,447 @@
-import Link from 'next/link';
+'use client';
+
+import { useEffect } from 'react';
 
 export default function Home() {
+  useEffect(() => {
+    // Mobile Navigation Toggle
+    const hamburger = document.querySelector('.hamburger');
+    const navMenu = document.querySelector('.nav-menu');
+
+    if (hamburger && navMenu) {
+      hamburger.addEventListener('click', () => {
+        navMenu.classList.toggle('active');
+        hamburger.classList.toggle('active');
+      });
+
+      // Close mobile menu when clicking on a link
+      document.querySelectorAll('.nav-menu a').forEach(link => {
+        link.addEventListener('click', () => {
+          navMenu.classList.remove('active');
+          hamburger.classList.remove('active');
+        });
+      });
+    }
+
+    // Smooth Scrolling
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', (e) => {
+        e.preventDefault();
+        const href = (anchor as HTMLAnchorElement).getAttribute('href') || '';
+        const target = document.querySelector(href);
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+
+    // Navbar Background on Scroll
+    const handleScroll = () => {
+      const navbar = document.querySelector('.navbar') as HTMLElement;
+      if (navbar) {
+        if (window.scrollY > 50) {
+          navbar.style.boxShadow = '0 4px 6px -1px rgb(0 0 0 / 0.1)';
+        } else {
+          navbar.style.boxShadow = '0 1px 2px 0 rgb(0 0 0 / 0.05)';
+        }
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+
+    // Form Submission
+    const contactForm = document.getElementById('contactForm') as HTMLFormElement;
+    if (contactForm) {
+      contactForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const formData = new FormData(contactForm);
+        const data = Object.fromEntries(formData);
+        
+        alert('Thank you for your message! We will get back to you within 24 hours.\n\n' +
+              `Name: ${data.name}\n` +
+              `Email: ${data.email}\n` +
+              `Service: ${data.service}\n` +
+              `Budget: ${data.budget}`);
+        
+        contactForm.reset();
+      });
+    }
+
+    // Animate on Scroll
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          (entry.target as HTMLElement).style.opacity = '1';
+          (entry.target as HTMLElement).style.transform = 'translateY(0)';
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.service-card, .portfolio-item').forEach(el => {
+      const element = el as HTMLElement;
+      element.style.opacity = '0';
+      element.style.transform = 'translateY(20px)';
+      element.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+      observer.observe(el);
+    });
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
   return (
-    <div className="pt-16">
+    <div>
+      {/* Navigation */}
+      <nav className="navbar">
+        <div className="container">
+          <div className="nav-brand">
+            <span className="logo">Webs4U</span>
+          </div>
+          <ul className="nav-menu">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#portfolio">Portfolio</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact" className="btn-primary">Get Quote</a></li>
+          </ul>
+          <div className="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+      </nav>
+
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-[#0B1F3A] via-[#0B1F3A] to-[#1a3a5a] text-white py-20 md:py-32">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-4xl mx-auto">
-            <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
-              We Build Websites That Build Businesses
-            </h1>
-            <p className="text-xl md:text-2xl text-gray-300 mb-8 leading-relaxed">
-              We design, build, and launch high-performance websites — fast, affordable, and custom-tailored to your goals.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                href="/contact"
-                className="bg-[#F4C542] text-[#0B1F3A] px-8 py-4 rounded-lg font-bold text-lg hover:bg-[#F4C542]/90 transition-all duration-200 transform hover:scale-105 shadow-lg"
-              >
-                Let's Build Your Website
-              </Link>
-              <Link
-                href="/portfolio"
-                className="bg-transparent border-2 border-[#F4C542] text-[#F4C542] px-8 py-4 rounded-lg font-bold text-lg hover:bg-[#F4C542] hover:text-[#0B1F3A] transition-all duration-200 transform hover:scale-105"
-              >
-                View My Work
-              </Link>
+      <section id="home" className="hero">
+        <div className="container">
+          <div className="hero-content">
+            <h1 className="hero-title">We Build Websites That Build Businesses</h1>
+            <p className="hero-subtitle">We design, build, and launch high-performance websites — fast, affordable, and custom-tailored to your goals.</p>
+            <div className="hero-buttons">
+              <a href="#contact" className="btn btn-primary">Start Your Project</a>
+              <a href="#portfolio" className="btn btn-secondary">View Our Work</a>
+            </div>
+          </div>
+          <div className="hero-image">
+            <div className="floating-card card-1"></div>
+            <div className="floating-card card-2"></div>
+            <div className="floating-card card-3"></div>
+          </div>
+        </div>
+      </section>
+
+      {/* Services Section */}
+      <section id="services" className="services">
+        <div className="container">
+          <div className="section-header">
+            <h2>Our Services</h2>
+            <p>Everything you need to establish a powerful online presence</p>
+          </div>
+          <div className="services-grid">
+            <div className="service-card">
+              <div className="service-icon">🏢</div>
+              <h3>Business Websites</h3>
+              <p>Professional websites that represent your brand and drive customer engagement.</p>
+            </div>
+            <div className="service-card">
+              <div className="service-icon">🎨</div>
+              <h3>Portfolio Websites</h3>
+              <p>Showcase your work and attract clients with a stunning portfolio site.</p>
+            </div>
+            <div className="service-card">
+              <div className="service-icon">🛒</div>
+              <h3>E-Commerce Stores</h3>
+              <p>Complete online stores with secure payment processing and inventory management.</p>
+            </div>
+            <div className="service-card">
+              <div className="service-icon">📅</div>
+              <h3>Booking Systems</h3>
+              <p>Streamline appointments and reservations with integrated booking solutions.</p>
+            </div>
+            <div className="service-card">
+              <div className="service-icon">🚀</div>
+              <h3>Landing Pages</h3>
+              <p>High-converting landing pages designed to turn visitors into customers.</p>
+            </div>
+            <div className="service-card">
+              <div className="service-icon">⚡</div>
+              <h3>Performance Optimization</h3>
+              <p>Lightning-fast load times and SEO optimization to help your website rank higher.</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Services Overview */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-[#0B1F3A] mb-4">
-              What We Offer
-            </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Comprehensive web solutions tailored to your business needs
-            </p>
+      {/* Portfolio Section */}
+      <section id="portfolio" className="portfolio">
+        <div className="container">
+          <div className="section-header">
+            <h2>Our Portfolio</h2>
+            <p>See what we've built for our clients</p>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[
-              {
-                title: 'Business Websites',
-                description: 'Professional websites that represent your brand and drive customer engagement.',
-                icon: '🏢',
-              },
-              {
-                title: 'Portfolio Websites',
-                description: 'Showcase your work and attract clients with a stunning portfolio site.',
-                icon: '🎨',
-              },
-              {
-                title: 'E-Commerce Stores',
-                description: 'Full-featured online stores with secure payment processing and inventory management.',
-                icon: '🛒',
-              },
-              {
-                title: 'Booking Systems',
-                description: 'Streamline appointments and reservations with integrated booking solutions.',
-                icon: '📅',
-              },
-              {
-                title: 'Landing Pages',
-                description: 'High-converting landing pages designed to turn visitors into customers.',
-                icon: '🚀',
-              },
-              {
-                title: 'Custom Solutions',
-                description: 'Tailored web applications built to solve your unique business challenges.',
-                icon: '⚙️',
-              },
-            ].map((service, index) => (
-              <div
-                key={index}
-                className="bg-white border-2 border-gray-200 rounded-lg p-6 hover:border-[#F4C542] transition-all duration-200 transform hover:-translate-y-2 shadow-md hover:shadow-xl"
-              >
-                <div className="text-4xl mb-4">{service.icon}</div>
-                <h3 className="text-xl font-bold text-[#0B1F3A] mb-3">
-                  {service.title}
-                </h3>
-                <p className="text-gray-600">{service.description}</p>
-              </div>
-            ))}
-          </div>
-
-          <div className="text-center mt-12">
-            <Link
-              href="/services"
-              className="inline-block bg-[#0B1F3A] text-white px-8 py-3 rounded-lg font-semibold hover:bg-[#0B1F3A]/90 transition-colors duration-200"
-            >
-              View All Services
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-[#0B1F3A] mb-4">
-              What Our Clients Say
-            </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Don't just take our word for it. Here's what satisfied clients have to say about working with us.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                name: 'Sarah Johnson',
-                business: 'Johnson & Associates',
-                role: 'Business Owner',
-                content: 'Webs4U transformed our online presence. The website is beautiful, fast, and has significantly increased our leads. The entire process was smooth and professional.',
-                rating: 5,
-              },
-              {
-                name: 'Michael Chen',
-                business: 'TechStart Inc.',
-                role: 'Founder',
-                content: 'Working with Webs4U was a game-changer. They understood our vision and delivered beyond expectations. Our new website has helped us attract more clients and grow our business.',
-                rating: 5,
-              },
-              {
-                name: 'Emily Rodriguez',
-                business: 'Creative Studio',
-                role: 'Creative Director',
-                content: 'The attention to detail and quality of work is outstanding. Our portfolio website perfectly showcases our work and has brought in several new projects. Highly recommended!',
-                rating: 5,
-              },
-            ].map((testimonial, index) => (
-              <div
-                key={index}
-                className="bg-white border-2 border-gray-200 rounded-lg p-6 shadow-md hover:shadow-xl transition-shadow duration-200"
-              >
-                <div className="flex items-center mb-4">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <svg
-                      key={i}
-                      className="w-5 h-5 text-[#F4C542]"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                  ))}
-                </div>
-                <p className="text-gray-600 mb-6 italic">"{testimonial.content}"</p>
-                <div>
-                  <p className="font-bold text-[#0B1F3A]">{testimonial.name}</p>
-                  <p className="text-sm text-gray-500">{testimonial.role}, {testimonial.business}</p>
+          <div className="portfolio-grid">
+            <div className="portfolio-item">
+              <div className="portfolio-image">
+                <div className="portfolio-overlay">
+                  <a href="https://github.com/MoAmanjee" target="_blank" rel="noopener noreferrer" className="portfolio-link">View Project →</a>
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* FAQ Section */}
-      <section className="py-20 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-[#0B1F3A] mb-4">
-              Frequently Asked Questions
-            </h2>
-            <p className="text-lg text-gray-600">
-              Got questions? We've got answers.
-            </p>
-          </div>
-
-          <div className="space-y-6">
-            {[
-              {
-                question: 'How long does it take to build a website?',
-                answer: 'Timeline depends on the complexity of your project. Simple business websites typically take 2-3 weeks, while more complex e-commerce or custom solutions may take 4-6 weeks. We will provide a detailed timeline after discussing your requirements.',
-              },
-              {
-                question: 'What is the typical cost for a website?',
-                answer: 'Our pricing starts at R2,000 for starter websites and goes up based on features and complexity. We offer three main packages (Starter, Business, Premium) and can create custom quotes for unique requirements. See our Pricing page for details.',
-              },
-              {
-                question: 'Do you provide hosting and domain services?',
-                answer: 'Yes! We can help you set up hosting and configure your domain. We will guide you through the process and ensure everything is properly configured for optimal performance.',
-              },
-              {
-                question: 'Can I update the website myself after it is built?',
-                answer: 'Absolutely! We can build your website with a content management system (CMS) that allows you to easily update content, add pages, and manage your site without technical knowledge.',
-              },
-              {
-                question: 'What if I need changes after the website is launched?',
-                answer: 'All our plans include a support period with revisions. After launch, we offer maintenance packages for ongoing updates, or you can request changes on a per-project basis.',
-              },
-              {
-                question: 'Do you work with businesses outside your local area?',
-                answer: 'Yes! We work with clients worldwide. All communication can be done remotely via email, video calls, and project management tools.',
-              },
-            ].map((faq, index) => (
-              <div
-                key={index}
-                className="bg-gray-50 border-2 border-gray-200 rounded-lg p-6 hover:border-[#F4C542] transition-colors duration-200"
-              >
-                <h3 className="text-xl font-bold text-[#0B1F3A] mb-3">
-                  {faq.question}
-                </h3>
-                <p className="text-gray-600 leading-relaxed">{faq.answer}</p>
+              <div className="portfolio-info">
+                <h3>Modern Business Website</h3>
+                <p>Corporate website with custom CMS</p>
               </div>
-            ))}
-          </div>
-
-          <div className="text-center mt-12">
-            <p className="text-gray-600 mb-4">Still have questions?</p>
-            <Link
-              href="/contact"
-              className="inline-block bg-[#0B1F3A] text-white px-8 py-3 rounded-lg font-semibold hover:bg-[#0B1F3A]/90 transition-colors duration-200"
-            >
-              Contact Us
-            </Link>
+            </div>
+            <div className="portfolio-item">
+              <div className="portfolio-image">
+                <div className="portfolio-overlay">
+                  <a href="https://github.com/MoAmanjee" target="_blank" rel="noopener noreferrer" className="portfolio-link">View Project →</a>
+                </div>
+              </div>
+              <div className="portfolio-info">
+                <h3>E-Commerce Store</h3>
+                <p>Full-featured online shopping platform</p>
+              </div>
+            </div>
+            <div className="portfolio-item">
+              <div className="portfolio-image">
+                <div className="portfolio-overlay">
+                  <a href="https://github.com/MoAmanjee" target="_blank" rel="noopener noreferrer" className="portfolio-link">View Project →</a>
+                </div>
+              </div>
+              <div className="portfolio-info">
+                <h3>Restaurant Website</h3>
+                <p>Menu, reservations, and online ordering</p>
+              </div>
+            </div>
+            <div className="portfolio-item">
+              <div className="portfolio-image">
+                <div className="portfolio-overlay">
+                  <a href="https://github.com/MoAmanjee" target="_blank" rel="noopener noreferrer" className="portfolio-link">View Project →</a>
+                </div>
+              </div>
+              <div className="portfolio-info">
+                <h3>Portfolio Website</h3>
+                <p>Creative showcase for artists</p>
+              </div>
+            </div>
+            <div className="portfolio-item">
+              <div className="portfolio-image">
+                <div className="portfolio-overlay">
+                  <a href="https://github.com/MoAmanjee" target="_blank" rel="noopener noreferrer" className="portfolio-link">View Project →</a>
+                </div>
+              </div>
+              <div className="portfolio-info">
+                <h3>Blog Platform</h3>
+                <p>Content management and publishing</p>
+              </div>
+            </div>
+            <div className="portfolio-item">
+              <div className="portfolio-image">
+                <div className="portfolio-overlay">
+                  <a href="https://github.com/MoAmanjee" target="_blank" rel="noopener noreferrer" className="portfolio-link">View Project →</a>
+                </div>
+              </div>
+              <div className="portfolio-info">
+                <h3>SaaS Landing Page</h3>
+                <p>High-converting product page</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-[#F4C542] to-[#f5d066]">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-[#0B1F3A] mb-6">
-            Ready to Grow Your Business Online?
-          </h2>
-          <p className="text-xl text-[#0B1F3A]/80 mb-8">
-            Get a free quote and consultation. No obligation, just expert advice.
-          </p>
-          <Link
-            href="/contact"
-            className="inline-block bg-[#0B1F3A] text-white px-10 py-4 rounded-lg font-bold text-lg hover:bg-[#0B1F3A]/90 transition-all duration-200 transform hover:scale-105 shadow-lg"
-          >
-            Get a Free Quote
-          </Link>
+      {/* About Section */}
+      <section id="about" className="about">
+        <div className="container">
+          <div className="about-content">
+            <div className="about-text">
+              <h2>Our Story</h2>
+              <p className="intro-text">Webs4U was founded by two passionate Computer Science Honours graduates who shared a single goal — to make professional, high-performing websites accessible to everyone.</p>
+              <p>After years of studying code, design, and systems architecture, we realized that technology isn't just about algorithms — it's about people. We wanted to use our skills to help small businesses, startups, and entrepreneurs tell their stories online through clean design and smart engineering.</p>
+              <p>What started as late-night coding sessions between two friends became a growing digital brand built on integrity, creativity, and results.</p>
+              <div className="mission-box">
+                <p className="mission-text">At Webs4U, we don't just build websites — we build digital experiences that inspire trust and drive success.</p>
+              </div>
+              <p className="mission-simple">Our mission is simple: to help others grow through technology, one website at a time.</p>
+              <div className="features-list">
+                <div className="feature-item">
+                  <span className="feature-check">✓</span>
+                  <div>
+                    <h4>Fast Turnaround</h4>
+                    <p>Get your website launched quickly without compromising quality</p>
+                  </div>
+                </div>
+                <div className="feature-item">
+                  <span className="feature-check">✓</span>
+                  <div>
+                    <h4>Transparent Pricing</h4>
+                    <p>No hidden fees. Clear, upfront pricing starting from R2,000</p>
+                  </div>
+                </div>
+                <div className="feature-item">
+                  <span className="feature-check">✓</span>
+                  <div>
+                    <h4>Ongoing Support</h4>
+                    <p>We're here for you even after your website goes live</p>
+                  </div>
+                </div>
+                <div className="feature-item">
+                  <span className="feature-check">✓</span>
+                  <div>
+                    <h4>Modern Technology</h4>
+                    <p>Built with the latest tools and best practices</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="about-stats">
+              <div className="stat-card">
+                <div className="stat-number">50+</div>
+                <div className="stat-label">Websites Built</div>
+              </div>
+              <div className="stat-card">
+                <div className="stat-number">98%</div>
+                <div className="stat-label">Client Satisfaction</div>
+              </div>
+              <div className="stat-card">
+                <div className="stat-number">2+</div>
+                <div className="stat-label">Years Experience</div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
+
+      {/* Contact Section */}
+      <section id="contact" className="contact">
+        <div className="container">
+          <div className="section-header">
+            <h2>Get Your Free Quote</h2>
+            <p>Tell us about your project and we'll get back to you within 24 hours</p>
+          </div>
+          <div className="contact-content">
+            <div className="contact-info">
+              <h3>Let's Build Something Amazing</h3>
+              <p>Ready to take your business online? Fill out the form and we'll discuss your project in detail.</p>
+              <div className="contact-details">
+                <div className="contact-item">
+                  <span className="contact-icon">📧</span>
+                  <div>
+                    <strong>Email</strong>
+                    <p>Prowebs4you@gmail.com</p>
+                  </div>
+                </div>
+                <div className="contact-item">
+                  <span className="contact-icon">📱</span>
+                  <div>
+                    <strong>Phone</strong>
+                    <p>(060) 827 0838</p>
+                    <p>(060) 036 2113</p>
+                  </div>
+                </div>
+                <div className="contact-item">
+                  <span className="contact-icon">⏰</span>
+                  <div>
+                    <strong>Response Time</strong>
+                    <p>Within 24 hours</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <form className="contact-form" id="contactForm">
+              <div className="form-group">
+                <label htmlFor="name">Your Name</label>
+                <input type="text" id="name" name="name" required />
+              </div>
+              <div className="form-group">
+                <label htmlFor="email">Email Address</label>
+                <input type="email" id="email" name="email" required />
+              </div>
+              <div className="form-group">
+                <label htmlFor="phone">Phone Number</label>
+                <input type="tel" id="phone" name="phone" />
+              </div>
+              <div className="form-group">
+                <label htmlFor="service">Service Needed</label>
+                <select id="service" name="service" required>
+                  <option value="">Select a service</option>
+                  <option value="business-website">Business Website</option>
+                  <option value="portfolio">Portfolio Website</option>
+                  <option value="ecommerce">E-Commerce Store</option>
+                  <option value="booking">Booking System</option>
+                  <option value="landing-page">Landing Page</option>
+                  <option value="redesign">Website Redesign</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div className="form-group">
+                <label htmlFor="budget">Budget Range</label>
+                <select id="budget" name="budget" required>
+                  <option value="">Select budget range</option>
+                  <option value="2000-3000">R2,000 - R3,000</option>
+                  <option value="3000-4500">R3,000 - R4,500</option>
+                  <option value="4500-8000">R4,500 - R8,000</option>
+                  <option value="over-8000">Over R8,000</option>
+                </select>
+              </div>
+              <div className="form-group">
+                <label htmlFor="message">Project Details</label>
+                <textarea id="message" name="message" rows={5} required></textarea>
+              </div>
+              <button type="submit" className="btn btn-primary btn-block">Send Message</button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="footer">
+        <div className="container">
+          <div className="footer-content">
+            <div className="footer-section">
+              <h3>Webs4U</h3>
+              <p>Building beautiful websites that drive results.</p>
+            </div>
+            <div className="footer-section">
+              <h4>Services</h4>
+              <ul>
+                <li><a href="#services">Web Design</a></li>
+                <li><a href="#services">Web Development</a></li>
+                <li><a href="#services">E-Commerce</a></li>
+                <li><a href="#services">Maintenance</a></li>
+              </ul>
+            </div>
+            <div className="footer-section">
+              <h4>Company</h4>
+              <ul>
+                <li><a href="#about">About Us</a></li>
+                <li><a href="#portfolio">Portfolio</a></li>
+                <li><a href="#contact">Contact</a></li>
+              </ul>
+            </div>
+            <div className="footer-section">
+              <h4>Connect</h4>
+              <div className="social-links">
+                <a href="https://github.com/MoAmanjee" target="_blank" rel="noopener noreferrer" aria-label="GitHub">GitHub</a>
+                <a href="mailto:Prowebs4you@gmail.com" aria-label="Email">Email</a>
+                <a href="tel:0608270838" aria-label="Phone">Phone</a>
+              </div>
+            </div>
+          </div>
+          <div className="footer-bottom">
+            <p>&copy; {new Date().getFullYear()} Webs4U. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

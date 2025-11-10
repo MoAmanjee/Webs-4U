@@ -183,7 +183,7 @@ export default function Home() {
               },
               {
                 question: 'What is the typical cost for a website?',
-                answer: 'Our pricing starts at R15,999 for starter websites and goes up based on features and complexity. We offer three main packages (Starter, Business, Premium) and can create custom quotes for unique requirements. See our Pricing page for details.',
+                answer: 'Our pricing starts at R2,000 for starter websites and goes up based on features and complexity. We offer three main packages (Starter, Business, Premium) and can create custom quotes for unique requirements. See our Pricing page for details.',
               },
               {
                 question: 'Do you provide hosting and domain services?',

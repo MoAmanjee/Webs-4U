@@ -4,7 +4,7 @@ export default function Pricing() {
   const plans = [
     {
       name: 'Starter',
-      price: 'R15,999',
+      price: 'R2,000',
       description: 'Perfect for small businesses and startups getting started online',
       features: [
         'Up to 5 pages',
@@ -19,7 +19,7 @@ export default function Pricing() {
     },
     {
       name: 'Business',
-      price: 'R39,999',
+      price: 'R4,500',
       description: 'Ideal for growing businesses that need more features',
       features: [
         'Up to 10 pages',
@@ -36,7 +36,7 @@ export default function Pricing() {
     },
     {
       name: 'Premium',
-      price: 'R79,999',
+      price: 'R8,000',
       description: 'Complete solution for established businesses',
       features: [
         'Unlimited pages',
